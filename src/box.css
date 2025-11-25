@@ -1,0 +1,24 @@
+.box {
+    display: block;
+}
+
+:root {
+    /* These are fallback values; real values are injected by applyCssVars */
+}
+
+/* CSS Variable groups */
+.vars_paddingTop_mobile {}
+.vars_paddingTop_tablet {}
+.vars_paddingTop_desktop {}
+
+.vars_paddingBottom_mobile {}
+.vars_paddingBottom_tablet {}
+.vars_paddingBottom_desktop {}
+
+.vars_paddingLeft_mobile {}
+.vars_paddingLeft_tablet {}
+.vars_paddingLeft_desktop {}
+
+.vars_paddingRight_mobile {}
+.vars_paddingRight_tablet {}
+.vars_paddingRight_desktop {}
