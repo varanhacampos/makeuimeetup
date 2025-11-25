@@ -1,0 +1,14 @@
+:root {
+    --overscroll-color: rgba(127, 29, 209, 0.2); /* Vivo Purple (leve) */
+}
+
+.overscrollWrapper {
+    width: 100%;
+    height: 100%;
+    overscroll-behavior: contain;
+    background-color: var(--overscroll-color);
+}
+
+html, body {
+    overscroll-behavior-y: none;
+}
