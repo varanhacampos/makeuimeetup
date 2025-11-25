@@ -112,7 +112,6 @@ export * from "./slider";
 export * from "./snackbar-context";
 export * from "./snackbar";
 export * from "./spinner";
-export * from "./sprinkles";
 export * from "./stack";
 export * from "./stacking-group";
 export * from "./stepper";
