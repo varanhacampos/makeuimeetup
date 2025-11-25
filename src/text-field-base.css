@@ -1,0 +1,80 @@
+.container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Vivo Type', sans-serif;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.field {
+    width: 100%;
+    border: 1px solid var(--color-neutral-300, #d3d3d3);
+    border-radius: 8px;
+    padding: 14px 12px 6px 12px;
+    font-size: 16px;
+    background: white;
+    color: #000;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field:focus {
+    border-color: var(--color-brand-500, #7f1dd1);
+    box-shadow: 0 0 0 3px rgba(127, 29, 209, 0.15);
+}
+
+.field.error {
+    border-color: var(--color-error-500, #d7263d);
+}
+
+.field.disabled {
+    background: #f3f3f3;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.label {
+    position: absolute;
+    left: 12px;
+    top: 16px;
+    font-size: 16px;
+    color: #666;
+    pointer-events: none;
+    transition: all 0.18s ease;
+}
+
+.labelFloating {
+    top: 4px;
+    font-size: 12px;
+    color: var(--color-brand-600, #6a0db0);
+}
+
+.labelError {
+    color: var(--color-error-600, #c7002a) !important;
+}
+
+.endIcon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+}
+
+.helperText {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #777;
+}
+
+.errorText {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--color-error-600, #c7002a);
+}
