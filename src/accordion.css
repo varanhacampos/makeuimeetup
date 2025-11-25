@@ -1,0 +1,41 @@
+.accordion {
+    width: 100%;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 16px 0;
+    cursor: pointer;
+    font-family: 'Vivo Type', sans-serif;
+}
+
+.label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #2d2d2d;
+}
+
+.icon {
+    transition: transform 0.25s ease;
+}
+
+.iconOpen {
+    transform: rotate(90deg);
+}
+
+.contentWrapper {
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.content {
+    padding: 0 0 16px 0;
+    font-size: 14px;
+    font-family: 'Vivo Type', sans-serif;
+    color: #444;
+    line-height: 1.4;
+}
