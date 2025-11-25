@@ -14,7 +14,6 @@ import IconCreditCardVisaRegular from './generated/mistica-icons/icon-credit-car
 import IconVisa from './icons/icon-visa';
 import IconMastercard from './icons/icon-mastercard';
 import IconAmex from './icons/icon-amex';
-import {useRifm} from 'rifm';
 import {createChangeEvent} from './utils/dom';
 import {combineRefs} from './utils/common';
 import * as styles from './credit-card-number-field.css';
