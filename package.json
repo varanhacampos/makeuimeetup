@@ -1,0 +1,19 @@
+{
+  "name": "uimeetup2025-make",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "vite": "4.5.0",
+    "@vitejs/plugin-react": "4.3.1",
+    "typescript": "5.4.5"
+  }
+}
