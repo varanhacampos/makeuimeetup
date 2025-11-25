@@ -55,12 +55,11 @@ const CreditCardInput = ({inputRef, value, defaultValue, onChange, ...other}: Pr
         [isControlledByParent, onChange]
     );
 
-    const rifm = useRifm({
-        format,
-        value: controlledValue,
-        onChange: handleChangeValue,
-        accept: /[\d]+/g,
-    });
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/[^\d]/g, ""); // só números
+    const formatted = format(raw);
+    handleChangeValue(formatted);
+};
 
     return (
         <input
