@@ -160,4 +160,4 @@ export const useFieldProps = ({
                 setFieldValue(name, processed, raw);
             }
         }
-    }, [name,]()
+    }, [name,]);
