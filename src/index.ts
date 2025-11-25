@@ -110,7 +110,6 @@ export * from "./skeletons";
 export * from "./skip-link";
 export * from "./slider";
 export * from "./snackbar-context";
-export * from "./snackbar-native";
 export * from "./snackbar";
 export * from "./spinner";
 export * from "./sprinkles";
