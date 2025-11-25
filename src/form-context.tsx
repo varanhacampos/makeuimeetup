@@ -1,105 +1,120 @@
 'use client';
-import * as React from 'react';
-import {useTheme} from './hooks';
-import * as tokens from './text-tokens';
+import React, {
+    createContext,
+    useCallback,
+    useContext,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 
-export type FormStatus = 'filling' | 'sending';
-export type FormErrors = {[name: string]: string | undefined};
-export type FieldValidator = (value: any, rawValue: string) => string | undefined;
+interface FieldState {
+    value?: string;
+    rawValue?: string;
+    error?: string;
+}
 
-export type FieldRegistration = {
-    input?: HTMLInputElement | HTMLSelectElement | null;
-    validator?: FieldValidator;
-    focusableElement?: HTMLDivElement | HTMLSelectElement | null;
-    label?: string;
+interface FormContextValue {
+    values: Record<string, string>;
+    rawValues: Record<string, string>;
+    errors: Record<string, string>;
+    registerField: (name: string, ref: HTMLInputElement | null) => void;
+    unregisterField: (name: string) => void;
+    setFieldValue: (name: string, value: string, raw: string) => void;
+    setFormError: (payload: { name: string; error: string }) => void;
+    jumpToNext: (name: string) => void;
+}
+
+const FormContext = createContext<FormContextValue | null>(null);
+
+export const useForm = () => {
+    const ctx = useContext(FormContext);
+    if (!ctx) throw new Error("useForm must be used inside <FormProvider>");
+    return ctx;
 };
 
-type Context = {
-    // raw values are the real input values
-    rawValues: {[name: string]: any};
-    setRawValue: (param: {readonly name: string; readonly value: any}) => void;
-    // these values can have some kind of postprocessing. For example, remove spaces from credit card numbers
-    values: {[name: string]: any};
-    setValue: (param: {readonly name: string; readonly value: any}) => void;
-    formStatus: FormStatus;
-    register: (name: string, ref: FieldRegistration) => void;
-    formErrors: FormErrors;
-    setFormError: (param: {readonly name: string; readonly error?: string}) => void;
-    jumpToNext: (currentName: string) => void;
-    submit: () => void;
-    validate: () => FormErrors;
-    formId: string;
-};
-
-export const FormContext = React.createContext<Context>({
-    values: {},
-    setValue: () => {},
-    rawValues: {},
-    setRawValue: () => {},
-    formStatus: 'filling',
-    register: () => {},
-    formErrors: {},
-    setFormError: () => {},
-    jumpToNext: () => {},
-    submit: () => {},
-    validate: () => ({}),
-    formId: '',
-});
-
-export const useForm = (): Context => React.useContext(FormContext);
-
-export const useControlProps = <T,>({
-    name,
-    label,
-    value,
-    defaultValue,
-    onChange,
-    disabled,
+export const FormProvider = ({
+    children,
 }: {
-    name: string;
-    label?: string;
-    value: undefined | T;
-    defaultValue: undefined | T;
-    onChange: undefined | ((value: T) => void);
-    disabled?: boolean;
-}): {
-    name: string;
-    label?: string;
-    value?: T;
-    defaultValue?: T;
-    onChange: (value: T) => void;
-    focusableRef: (focusableElement: HTMLDivElement | null) => void;
-    disabled: boolean | undefined;
-} => {
-    const {setRawValue, setValue, rawValues, setFormError, register, formStatus} = useForm();
+    children: React.ReactNode;
+}) => {
+    const fieldsRef = useRef<Record<string, HTMLInputElement | null>>({});
+    const [values, setValues] = useState<Record<string, string>>({});
+    const [rawValues, setRawValues] = useState<Record<string, string>>({});
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
-    React.useEffect(() => {
-        if (rawValues[name] === undefined) {
-            const initialValue = value ?? defaultValue ?? false;
-            setValue({name, value: initialValue});
-            setRawValue({name, value: initialValue});
-        }
-    }, [value, name, defaultValue, rawValues, setValue, setRawValue]);
+    const registerField = useCallback((name: string, ref: HTMLInputElement | null) => {
+        fieldsRef.current[name] = ref;
+    }, []);
 
-    return {
-        name,
-        label,
-        value,
-        defaultValue: defaultValue ?? (value === undefined ? rawValues[name] ?? false : undefined),
-        focusableRef: (focusableElement: HTMLDivElement | null) =>
-            register(name, {
-                focusableElement,
-                label,
-            }),
-        onChange: (value: T) => {
-            setRawValue({name, value});
-            setValue({name, value});
-            setFormError({name, error: ''});
-            onChange?.(value);
+    const unregisterField = useCallback((name: string) => {
+        delete fieldsRef.current[name];
+    }, []);
+
+    const setFieldValue = useCallback(
+        (name: string, value: string, raw: string) => {
+            setValues((prev) => ({ ...prev, [name]: value }));
+            setRawValues((prev) => ({ ...prev, [name]: raw }));
         },
-        disabled: formStatus === 'sending' || disabled,
-    };
+        []
+    );
+
+    const setFormError = useCallback(
+        ({ name, error }: { name: string; error: string }) => {
+            setErrors((prev) => ({ ...prev, [name]: error }));
+        },
+        []
+    );
+
+    const jumpToNext = useCallback(
+        (name: string) => {
+            const names = Object.keys(fieldsRef.current);
+            const index = names.indexOf(name);
+            if (index >= 0 && index < names.length - 1) {
+                const nextField = fieldsRef.current[names[index + 1]];
+                nextField?.focus();
+            }
+        },
+        []
+    );
+
+    const contextValue = useMemo(
+        () => ({
+            values,
+            rawValues,
+            errors,
+            registerField,
+            unregisterField,
+            setFieldValue,
+            setFormError,
+            jumpToNext,
+        }),
+        [values, rawValues, errors, jumpToNext]
+    );
+
+    return (
+        <FormContext.Provider value={contextValue}>
+            {children}
+        </FormContext.Provider>
+    );
 };
+
+interface UseFieldPropsConfig {
+    name: string;
+    label?: string;
+    value?: string;
+    defaultValue?: string;
+    processValue?: (input: string) => string;
+    helperText?: string;
+    optional?: boolean;
+    error?: string;
+    disabled?: boolean;
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+    validate?: (value: string, rawValue: string) => string | undefined;
+    validateOnBlurInsideForm?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChangeValue?: (value: string, rawValue: string) => void;
+}
 
 export const useFieldProps = ({
     name,
@@ -113,84 +128,36 @@ export const useFieldProps = ({
     disabled,
     onBlur,
     validate,
-    validateOnBlurInsideForm = true,
+    validateOnBlurInsideForm,
     onChange,
     onChangeValue,
-}: {
-    name: string;
-    label: string;
-    value?: string;
-    defaultValue?: string;
-    processValue: (value: string) => unknown;
-    helperText?: string;
-    optional?: boolean;
-    error?: boolean;
-    disabled?: boolean;
-    onBlur?: React.FocusEventHandler;
-    validate?: (value: any, rawValue: string) => string | undefined;
-    validateOnBlurInsideForm?: boolean;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onChangeValue?: (value: any, rawValue: string) => void;
-}): {
-    value?: string;
-    defaultValue?: string;
-    name: string;
-    label: string;
-    helperText?: string;
-    required: boolean;
-    error: boolean;
-    disabled: boolean;
-    onBlur: React.FocusEventHandler | undefined;
-    inputRef: (field: HTMLInputElement | null) => void;
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-} => {
-    const {texts, t} = useTheme();
-    const {setRawValue, setValue, rawValues, values, formErrors, formStatus, setFormError, register} =
-        useForm();
-    const rawValue = value ?? defaultValue ?? rawValues[name] ?? '';
-    const processValueRef = React.useRef(processValue);
+}: UseFieldPropsConfig) => {
+    const {
+        registerField,
+        unregisterField,
+        setFieldValue,
+        errors,
+        rawValues,
+        values,
+    } = useForm();
 
-    React.useEffect(() => {
-        setRawValue({name, value: rawValue});
-        setValue({name, value: processValueRef.current(rawValue)});
-    }, [name, rawValue, setRawValue, setValue]);
+    const internalRef = useRef<HTMLInputElement | null>(null);
 
-    React.useEffect(() => {
-        if (disabled) {
-            setFormError({name, error: undefined});
+    const handleRef = useCallback((ref: HTMLInputElement | null) => {
+        internalRef.current = ref;
+        registerField(name, ref);
+    }, [name, registerField]);
+
+    const handleBlur = useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+        onBlur?.(event);
+
+        const raw = event.target.value;
+        const processed = processValue ? processValue(raw) : raw;
+
+        if (validateOnBlurInsideForm && validate) {
+            const err = validate(processed, raw);
+            if (err) {
+                setFieldValue(name, processed, raw);
+            }
         }
-    }, [disabled, name, setFormError]);
-
-    return {
-        value,
-        defaultValue: defaultValue ?? (value === undefined ? rawValues[name] ?? '' : undefined),
-        name,
-        label,
-        helperText: formErrors[name] || helperText,
-        required: !optional,
-        error: error || !!formErrors[name],
-        disabled: disabled || formStatus === 'sending',
-        onBlur: validateOnBlurInsideForm
-            ? (e: React.FocusEvent) => {
-                  let error: string | undefined;
-                  if (!rawValues[name] && !optional) {
-                      error = texts.formFieldErrorIsMandatory || t(tokens.formFieldErrorIsMandatory);
-                  } else if (validate) {
-                      error = validate(values[name], rawValues[name]);
-                  }
-                  setFormError({name, error});
-                  onBlur?.(e);
-              }
-            : onBlur,
-        inputRef: (input: HTMLInputElement | null) => register(name, {input, validator: validate, label}),
-        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-            const rawValue = event.currentTarget.value;
-            const value = processValue(rawValue);
-            setRawValue({name, value: rawValue});
-            setValue({name, value});
-            setFormError({name, error: ''});
-            onChange?.(event);
-            onChangeValue?.(value, rawValue);
-        },
-    };
-};
+    }, [name,]()
