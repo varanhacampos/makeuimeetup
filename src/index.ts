@@ -1,138 +1,95 @@
-export * from "./accordion";
-export * from "./align";
-export * from "./avatar";
-export * from "./badge";
-export * from "./box";
-export * from "./boxed";
-export * from "./button-fixed-footer-layout";
-export * from "./button-group";
-export * from "./button-layout";
-export * from "./button";
-export * from "./callout";
-export * from "./card-cover";
-export * from "./card-data";
-export * from "./card-internal";
-export * from "./card-media";
-export * from "./card-naked";
-export * from "./carousel";
-export * from "./checkbox";
-export * from "./chip";
-export * from "./circle";
-export * from "./counter";
-export * from "./cover-hero-media";
-export * from "./cover-hero";
-export * from "./credit-card-expiration-field";
-export * from "./credit-card-fields";
-export * from "./credit-card-number-field";
-export * from "./date-field";
-export * from "./date-time-field";
-export * from "./desktop-container-type-context";
-export * from "./dialog-context";
-export * from "./dialog";
-export * from "./divider";
-export * from "./double-field";
-export * from "./drawer";
-export * from "./email-field";
-export * from "./empty-state-card";
-export * from "./empty-state";
-export * from "./fade-in";
-export * from "./feedback";
-export * from "./fixed-footer-layout";
-export * from "./fixed-to-top";
-export * from "./focus-trap";
-export * from "./form-context";
-export * from "./form";
-export * from "./grid-layout";
-export * from "./grid";
-export * from "./header";
-export * from "./hero";
-export * from "./image";
-export * from "./index";
-export * from "./inline";
-export * from "./integer-field";
-export * from "./list";
-export * from "./loading-bar";
-export * from "./loading-screen";
-export * from "./logo-blau";
-export * from "./logo-common";
-export * from "./logo-esimflag";
-export * from "./logo-movistar-new";
-export * from "./logo-movistar";
-export * from "./logo-o2-new";
-export * from "./logo-o2";
-export * from "./logo-telefonica";
-export * from "./logo-tu";
-export * from "./logo-vivo";
-export * from "./logo";
-export * from "./master-detail-layout";
-export * from "./maybe-dismissable";
-export * from "./menu";
-export * from "./meter";
-export * from "./modal-context-provider";
-export * from "./month-field";
-export * from "./mosaic";
-export * from "./navigation-bar";
-export * from "./navigation-breadcrumbs";
-export * from "./negative-box";
-export * from "./nestable-context";
-export * from "./overlay";
-export * from "./overscroll-color-context";
-export * from "./package-version";
-export * from "./password-field";
-export * from "./pin-field";
-export * from "./placeholder";
-export * from "./popover";
-export * from "./portal";
-export * from "./progress-bar";
-export * from "./radio-button";
-export * from "./rating";
-export * from "./responsive-layout";
-export * from "./screen-reader-only";
-export * from "./screen-size-context-provider";
-export * from "./screen-size-context";
-export * from "./search-field";
-export * from "./select";
-export * from "./sheet-actions-list";
-export * from "./sheet-actions";
-export * from "./sheet-common";
-export * from "./sheet-info";
-export * from "./sheet-native";
-export * from "./sheet-radio-list";
-export * from "./sheet-root";
-export * from "./sheet-types";
-export * from "./sheet-web";
-export * from "./skeleton-base";
-export * from "./skeletons";
-export * from "./skip-link";
-export * from "./slider";
-export * from "./snackbar-context";
-export * from "./snackbar";
-export * from "./spinner";
-export * from "./stack";
-export * from "./stacking-group";
-export * from "./stepper";
-export * from "./switch-component";
-export * from "./tab-focus";
-export * from "./table-actions-header";
-export * from "./table-cell-text";
-export * from "./table";
-export * from "./tabs";
-export * from "./tag";
-export * from "./text-field-base";
-export * from "./text-field-components";
-export * from "./text-field";
-export * from "./text-link";
-export * from "./text-props";
-export * from "./text-tokens";
-export * from "./text";
-export * from "./theme-context-provider";
-export * from "./theme-context";
-export * from "./theme-variant-context";
-export * from "./theme";
-export * from "./timeline";
-export * from "./timer";
-export * from "./title";
-export * from "./tooltip-context-provider";
-export * from "./tooltip";
-export * from "./touchable";
-export * from "./video";
+// ===============
+// CORE PROVIDERS
+// ===============
+
+export { ThemeProvider, useTheme } from './theme-context-provider';
+export { OverscrollColorProvider, useOverscrollColor } from './overscroll-color-context';
+
+// =====================
+// CORE FORM FOUNDATION
+// =====================
+
+export { FormProvider, useForm } from './form-context';
+export { default as TextFieldBase } from './text-field-base';
+export { default as TextField } from './text-field';
+export { default as EmailField } from './email-field';
+
+// ===============
+// UI COMPONENTS
+// ===============
+
+// Basic structure components
+export { default as Box } from './box';
+export { default as Inline } from './inline';
+export { default as Stack } from './stack';
+export { default as Divider } from './divider';
+
+// Typography
+export { default as Text } from './text';
+export { default as Title } from './title';
+
+// Layout components
+export { default as Grid } from './grid';
+export { default as ResponsiveLayout } from './responsive-layout';
+export { default as FixedFooterLayout } from './fixed-footer-layout';
+export { default as ButtonLayout } from './button-layout';
+
+// Buttons / Inputs / Forms
+export { default as Button } from './button';
+export { default as Checkbox } from './checkbox';
+export { default as RadioButton } from './radio-button';
+export { default as Switch } from './switch-component';
+export { default as Select } from './select';
+export { default as TextLink } from './text-link';
+
+// Navigation
+export { default as NavigationBar } from './navigation-bar';
+export { default as NavigationBreadcrumbs } from './navigation-breadcrumbs';
+
+// Feedback
+export { default as Snackbar } from './snackbar';
+export { default as ProgressBar } from './progress-bar';
+export { default as Spinner } from './spinner';
+
+// Cards
+export { default as Card } from './card-internal';
+export { default as CardMedia } from './card-media';
+export { default as CardData } from './card-data';
+export { default as CardNaked } from './card-naked';
+export { default as CardCover } from './card-cover';
+
+// Images & Media
+export { default as Image } from './image';
+export { default as Video } from './video';
+
+// Interactive elements
+export { default as Accordion } from './accordion';
+export { default as Tooltip } from './tooltip';
+export { default as Popover } from './popover';
+export { default as Menu } from './menu';
+
+// Hero / Section components
+export { default as Hero } from './hero';
+export { default as CoverHero } from './cover-hero';
+
+// Utility Containers
+export { default as Overlay } from './overlay';
+export { default as Portal } from './portal';
+
+// Icons (optional: depends if you want to export)
+export { default as LogoVivo } from './logo-vivo';
+export { default as LogoTelefonica } from './logo-telefonica';
+export { default as LogoO2 } from './logo-o2';
+export { default as LogoMovistar } from './logo-movistar';
+
+// ====================
+// REMOVED / NOT EXPORTED
+// ====================
+//
+// ❌ decimal-field.tsx
+// ❌ phone-number-field.tsx
+// ❌ phone-number-field-lite.tsx
+// ❌ date-time-picker.tsx
+//
+// **Esses não aparecem aqui para evitar erros.
+// ====================
