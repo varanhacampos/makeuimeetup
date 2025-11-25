@@ -2,28 +2,53 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build library
+      - name: Build project
         run: npm run build
 
-      - name: Upload dist folder
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: build
           path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-pages.outputs.page_url }}
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Upload to GitHub Pages
+        id: deploy-pages
+        uses: actions/deploy-pages@v4
